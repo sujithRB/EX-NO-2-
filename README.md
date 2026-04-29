@@ -1,4 +1,7 @@
 ## EX. NO:2 IMPLEMENTATION OF PLAYFAIR CIPHER
+### NAME: SUJITH RB
+### REG. NO: 212224103003
+### Date: 29-04-2026
 
  
 
@@ -34,10 +37,135 @@ STEP-5: Display the obtained cipher text.
 
 
 
-Program:
+## Program:
+```
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+char keyTable[5][5];
+
+void generateKeyTable(char key[]) {
+    int used[26] = {0};
+    int i, j, k = 0;
+
+    for (i = 0; key[i] != '\0'; i++) {
+        char ch = tolower(key[i]);
+        if (ch == 'j') ch = 'i';
+
+        if (ch >= 'a' && ch <= 'z' && !used[ch - 'a']) {
+            keyTable[k / 5][k % 5] = ch;
+            used[ch - 'a'] = 1;
+            k++;
+        }
+    }
+
+    for (i = 0; i < 26; i++) {
+        if (i + 'a' == 'j') continue;
+        if (!used[i]) {
+            keyTable[k / 5][k % 5] = i + 'a';
+            k++;
+        }
+    }
+}
+
+
+void findPosition(char ch, int *row, int *col) {
+    int i, j;
+    if (ch == 'j') ch = 'i';
+
+    for (i = 0; i < 5; i++) {
+        for (j = 0; j < 5; j++) {
+            if (keyTable[i][j] == ch) {
+                *row = i;
+                *col = j;
+                return;
+            }
+        }
+    }
+}
+
+
+void encrypt(char text[]) {
+    int i, r1, c1, r2, c2;
+    char a, b;
+
+    for (i = 0; i < strlen(text); i += 2) {
+        a = text[i];
+        b = text[i + 1];
+
+        findPosition(a, &r1, &c1);
+        findPosition(b, &r2, &c2);
+
+        if (r1 == r2) {
+            printf("%c%c", keyTable[r1][(c1 + 1) % 5],
+                           keyTable[r2][(c2 + 1) % 5]);
+        } 
+        else if (c1 == c2) {
+            printf("%c%c", keyTable[(r1 + 1) % 5][c1],
+                           keyTable[(r2 + 1) % 5][c2]);
+        } 
+        else {
+            printf("%c%c", keyTable[r1][c2],
+                           keyTable[r2][c1]);
+        }
+    }
+}
+
+int main() {
+    char key[50], text[100];
+    int i, j = 0;
+
+    printf("Enter the keyword: ");
+    scanf("%s", key);
+
+    printf("Enter the plaintext: ");
+    scanf("%s", text);
+
+    
+    for (i = 0; i < strlen(text); i++) {
+        text[i] = tolower(text[i]);
+        if (text[i] == 'j') text[i] = 'i';
+    }
+
+    char processed[100];
+    for (i = 0; i < strlen(text); i++) {
+        processed[j++] = text[i];
+        if (text[i] == text[i + 1]) {
+            processed[j++] = 'x';
+        }
+    }
+
+    if (j % 2 != 0) {
+        processed[j++] = 'z';
+    }
+    processed[j] = '\0';
+
+    generateKeyTable(key);
+
+    printf("\nKey Matrix:\n");
+    for (i = 0; i < 5; i++) {
+        for (j = 0; j < 5; j++) {
+            printf("%c ", keyTable[i][j]);
+        }
+        printf("\n");
+    }
+
+    printf("\nCipher Text: ");
+    encrypt(processed);
+
+    return 0;
+}
+
+```
 
 
 
 
+## Output:
+<img width="1456" height="847" alt="Screenshot 2026-04-29 173225" src="https://github.com/user-attachments/assets/da7bae90-82e8-439f-9b1d-753236f30df9" />
 
-Output:
+
+## Result
+Thus the program is executed successfully..
+
